@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { generateClient } from 'aws-amplify/data';
 import { Authenticator } from '@aws-amplify/ui-react';
 import { Amplify } from 'aws-amplify';
 import outputs from '../amplify_outputs.json';
@@ -7,29 +6,41 @@ import '@aws-amplify/ui-react/styles.css';
 import './App.css';
 
 Amplify.configure(outputs);
-const client = generateClient();
 
 function App() {
   const [prompt, setPrompt] = useState("");
   const [videoUrl, setVideoUrl] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // --- CHANGED SECTION: DIRECT IP CALL ---
   async function handleGenerate() {
     if (!prompt) return;
     setLoading(true);
     setVideoUrl(null);
+    
     try {
-      const { data, errors } = await client.queries.generateVideo({ prompt });
-      if (errors) {
-        alert("Server is busy. Please try again in a moment.");
-      } else {
-        setVideoUrl(data);
+      // We call your EC2 Elastic IP directly on port 3000
+      const response = await fetch('http://18.209.117.26:3000/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
+
+      if (!response.ok) {
+        throw new Error("Server busy or offline");
       }
+
+      const data = await response.json();
+      // Assuming your EC2 returns { videoUrl: "..." }
+      setVideoUrl(data.videoUrl); 
+      
     } catch (e) {
-      alert("Connection to GPU lost. Check if EC2 is online.");
+      console.error(e);
+      alert("Connection to GPU lost. Check if EC2 is online and port 3000 is open.");
     }
     setLoading(false);
   }
+  // --- END OF CHANGED SECTION ---
 
   return (
     <Authenticator>
