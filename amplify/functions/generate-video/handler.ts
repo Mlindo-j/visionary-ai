@@ -2,7 +2,7 @@ import type { Schema } from '../../data/resource';
 
 export const handler: Schema["generateVideo"]["functionHandler"] = async (event) => {
   const { prompt } = event.arguments;
-  const EC2_IP = "18.205.67.201"; 
+  const EC2_IP = "18.209.117.26"; 
   
   // Use process.env to grab your password safely
   const API_KEY = process.env.GPU_SECRET; 
