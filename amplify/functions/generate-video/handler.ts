@@ -8,7 +8,7 @@ export const handler: Schema["generateVideo"]["functionHandler"] = async (event)
   const API_KEY = process.env.GPU_SECRET; 
 
   try {
-    const response = await fetch(`http://${EC2_IP}:5000/generate`, {
+    const response = await fetch(`http://18.209.117.26:5000/generate`, {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
