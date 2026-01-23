@@ -5,7 +5,7 @@ export const handler: Schema["generateVideo"]["functionHandler"] = async (event)
   const EC2_IP = "18.209.117.26"; 
   
   // Use process.env to grab your password safely
-  const API_KEY = process.env.GPU_SECRET; 
+  const API_KEY = "test123"; 
 
   try {
     const response = await fetch(`http://18.209.117.26:5000/generate`, {
